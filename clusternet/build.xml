@@ -3,10 +3,12 @@
   <property name="CURRENT_HADOOP" value="hadoop-0.20.2" />
 
   <target name="setup-dirs">
+    <echo message="Extracting the current version of Hadoop ${CURRENT_HADOOP}" />
     <exec dir="." executable="tar">
 	<arg line="-xf" />
 	<arg line="thirdparty/hadoop/${CURRENT_HADOOP}.tar" />
     </exec>
+    <echo message="Copying default Hadoop configuration to the conf directory." />
     <move file="${CURRENT_HADOOP}" tofile="runtime" />
     <copy todir="runtime/conf/">
       <fileset dir="conf/" includes="*.xml" />
