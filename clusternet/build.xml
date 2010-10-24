@@ -1,0 +1,46 @@
+<project name="ClusterNet" basedir="." default="setup-dirs">
+
+  <property name="CURRENT_HADOOP" value="hadoop-0.20.2" />
+
+  <target name="setup-dirs">
+    <exec dir="." executable="tar">
+	<arg line="-xf" />
+	<arg line="thirdparty/hadoop/${CURRENT_HADOOP}.tar" />
+    </exec>
+    <move file="${CURRENT_HADOOP}" tofile="runtime" />
+    <copy todir="runtime/conf/">
+      <fileset dir="conf/" includes="*.xml" />
+    </copy>
+  </target>
+
+  <property name="HADOOP_HOME" value="runtime/" />
+  <target name="format">
+    <delete dir="datastore/" />
+    <mkdir dir="datastore/"/>
+    <exec dir="${HADOOP_HOME}/bin" executable="hadoop">
+        <arg line="namenode format"/>
+    </exec>
+  </target>
+
+  <target name="update-slaves">
+
+    <echo message="Updating slaves" />
+    <scp todir="hadoop@cu064:/u1/hadoop/clusternet/conf" password="hadoop">
+      <fileset dir="conf" includes="*.xml"/>
+    </scp>
+
+    <scp todir="hadoop@cu092:/u1/hadoop/clusternet/conf" password="hadoop">
+      <fileset dir="conf" includes="*.xml"/>
+    </scp>
+
+    <scp todir="hadoop@cu102:/u1/hadoop/clusternet/conf" password="hadoop">
+      <fileset dir="conf" includes="*.xml"/>
+    </scp>
+
+    <scp todir="hadoop@cu104:/u1/hadoop/clusternet/conf" password="hadoop">
+      <fileset dir="conf" includes="*.xml"/>
+    </scp>
+
+  </target>
+
+</project>
