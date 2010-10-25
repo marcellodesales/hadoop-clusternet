@@ -1,6 +1,16 @@
 <project name="ClusterNet" basedir="." default="setup-dirs">
 
   <property name="CURRENT_HADOOP" value="hadoop-0.20.2" />
+  
+  <property name="SLAVES_LIST" value="cu064:cu092:cu102:cu104" />
+
+  <target name="init">
+    <property name="ant-contrib.jar"
+              location="thirdparty/ant/ant-contrib-1.0b3.jar"/>
+
+    <taskdef resource="net/sf/antcontrib/antlib.xml"
+             classpath="${ant-contrib.jar}"/>
+  </target>
 
   <target name="setup-dirs">
     <echo message="Extracting the current version of Hadoop ${CURRENT_HADOOP}" />
@@ -24,25 +34,33 @@
     </exec>
   </target>
 
-  <target name="update-slaves">
+  <target depends="init" name="update-master">
+     <echo message="Updating the master host..." />
+     <delete file="runtime/conf/slaves" />
+     <echo message="Creating new file 'runtime/conf/slaves'..." />
+     <for list="${SLAVES_LIST}" param="slaveHost" delimiter=":">
+      <sequential>
+        <echo file="runtime/conf/slaves" append="true">@{slaveHost}${line.separator}</echo>
+      </sequential>
+    </for>
+  </target>
 
-    <echo message="Updating slaves" />
-    <scp todir="hadoop@cu064:/u1/hadoop/clusternet/conf" password="hadoop">
-      <fileset dir="conf" includes="*.xml"/>
-    </scp>
+  <target depends="init" name="update-slaves">
+    <echo message="Updating the slave hosts..." />
+    <for list="${SLAVES_LIST}" param="slaveHost" delimiter=":">
+      <sequential>
+        <echo>Updating slave host @{slaveHost}</echo>
+        <var name="var" value="@{slaveHost}" />
+	<scp todir="hadoop@${var}:/u1/hadoop/clusternet/conf" password="hadoop">
+           <fileset dir="conf" includes="*.xml"/>
+        </scp>
+      </sequential>
+    </for>
+  </target>
 
-    <scp todir="hadoop@cu092:/u1/hadoop/clusternet/conf" password="hadoop">
-      <fileset dir="conf" includes="*.xml"/>
-    </scp>
-
-    <scp todir="hadoop@cu102:/u1/hadoop/clusternet/conf" password="hadoop">
-      <fileset dir="conf" includes="*.xml"/>
-    </scp>
-
-    <scp todir="hadoop@cu104:/u1/hadoop/clusternet/conf" password="hadoop">
-      <fileset dir="conf" includes="*.xml"/>
-    </scp>
-
+  <target name="update-cluster">
+    <antcall target="update-master" />
+    <antcall target="update-slaves" />
   </target>
 
 </project>
