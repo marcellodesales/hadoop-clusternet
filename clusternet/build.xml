@@ -1,9 +1,9 @@
-<project name="ClusterNet" basedir="." default="setup-dirs">
+<project name="ClusterNet" basedir="." default="setup-runtime">
 
   <property name="CURRENT_HADOOP" value="hadoop-0.20.2" />
   <property file="default.properties" />
   
-  <target name="init">
+  <target name="load-contrib">
     <property name="ant-contrib.jar"
               location="thirdparty/ant/ant-contrib-1.0b3.jar"/>
 
@@ -11,7 +11,7 @@
              classpath="${ant-contrib.jar}"/>
   </target>
 
-  <target name="setup-dirs">
+  <target name="setup-runtime">
     <echo message="Extracting the current version of Hadoop ${CURRENT_HADOOP}" />
     <exec dir="." executable="tar">
 	<arg line="-xf" />
@@ -22,7 +22,17 @@
     <copy todir="runtime/conf/">
       <fileset dir="conf/" includes="*.xml" />
     </copy>
+    
   </target>
+
+  <target depends="load-contrib" name="authorize-master-ssh-on-slave">
+    <exec executable="hostname" outputproperty="hostname.current"/>
+    <loadfile srcFile="conf/masters" property="hostname.master" />
+    <echo message="current: ${hostname.current} | master: ${hostname.master}" />
+    <echo message="Authorizing the Master access in the slave node ${hostname.current}" />
+    <loadfile property="master.ssh.key" srcFile="conf/master_sshkey.pub"/>
+    <echo file="${user.home}/.ssh/authorized_keys" append="true">${master.ssh.key}</echo>
+ </target>
 
   <property name="HADOOP_HOME" value="runtime/" />
   <target name="format">
@@ -33,7 +43,7 @@
     </exec>
   </target>
 
-  <target depends="init" name="update-master">
+  <target depends="load-contrib" name="update-master">
      <echo message="Updating the master host..." />
      <delete file="runtime/conf/slaves" />
      <echo message="Creating new file 'runtime/conf/slaves'..." />
@@ -44,7 +54,7 @@
     </for>
   </target>
 
-  <target depends="init" name="update-slaves">
+  <target depends="load-contrib " name="update-slaves">
     <echo message="Updating the slave hosts..." />
     <for list="${slaves.list}" param="slaveHost" delimiter=",">
       <sequential>
