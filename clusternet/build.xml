@@ -22,6 +22,7 @@
     <move file="${CURRENT_HADOOP}" tofile="runtime" />
     <copy todir="runtime/conf/">
       <fileset dir="conf/" includes="*.xml" />
+      <fileset dir="conf/" includes="*.sh" />
     </copy>
     
   </target>
@@ -55,6 +56,7 @@
     </for>
     <copy todir="runtime/conf/">
       <fileset dir="conf/" includes="*.xml"/>
+      <fileset dir="conf/" includes="*.sh" />
     </copy>
   </target>
 
@@ -66,6 +68,7 @@
         <var name="var" value="@{slaveHost}" />
 	<scp todir="hadoop@${var}:/u1/hadoop/clusternet/runtime/conf" password="hadoop">
            <fileset dir="conf" includes="*.xml"/>
+           <fileset dir="conf/" includes="*.sh" />
         </scp>
       </sequential>
     </for>
