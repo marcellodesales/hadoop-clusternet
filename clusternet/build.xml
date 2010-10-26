@@ -1,6 +1,6 @@
 <project name="ClusterNet" basedir="." default="setup-runtime">
 
-  <property name="CURRENT_HADOOP" value="hadoop-0.20.2" />
+  <property name="CURRENT_HADOOP" value="hadoop-0.20.2+737" />
   <property file="default.properties" />
   
   <target name="load-contrib">
@@ -14,8 +14,8 @@
   <target name="setup-runtime">
     <echo message="Extracting the current version of Hadoop ${CURRENT_HADOOP}" />
     <exec dir="." executable="tar">
-	<arg line="-xf" />
-	<arg line="thirdparty/hadoop/${CURRENT_HADOOP}.tar" />
+	<arg line="-zxpf" />
+	<arg line="thirdparty/hadoop/${CURRENT_HADOOP}.tar.gz" />
     </exec>
     <echo message="Copying default Hadoop configuration to the conf directory." />
     <move file="${CURRENT_HADOOP}" tofile="runtime" />
@@ -52,6 +52,9 @@
         <echo file="runtime/conf/slaves" append="true">@{slaveHost}${line.separator}</echo>
       </sequential>
     </for>
+    <copy todir="runtime/conf/">
+      <fileset dir="conf/" includes="*.xml"/>
+    </copy>
   </target>
 
   <target depends="load-contrib " name="update-slaves">
@@ -60,7 +63,7 @@
       <sequential>
         <echo>Updating slave host @{slaveHost}</echo>
         <var name="var" value="@{slaveHost}" />
-	<scp todir="hadoop@${var}:/u1/hadoop/clusternet/conf" password="hadoop">
+	<scp todir="hadoop@${var}:/u1/hadoop/clusternet/runtime/conf" password="hadoop">
            <fileset dir="conf" includes="*.xml"/>
         </scp>
       </sequential>
