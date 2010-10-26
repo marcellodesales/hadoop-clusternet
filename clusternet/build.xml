@@ -1,9 +1,8 @@
 <project name="ClusterNet" basedir="." default="setup-dirs">
 
   <property name="CURRENT_HADOOP" value="hadoop-0.20.2" />
+  <property file="default.properties" />
   
-  <property name="SLAVES_LIST" value="cu064:cu092:cu102:cu104" />
-
   <target name="init">
     <property name="ant-contrib.jar"
               location="thirdparty/ant/ant-contrib-1.0b3.jar"/>
@@ -38,7 +37,7 @@
      <echo message="Updating the master host..." />
      <delete file="runtime/conf/slaves" />
      <echo message="Creating new file 'runtime/conf/slaves'..." />
-     <for list="${SLAVES_LIST}" param="slaveHost" delimiter=":">
+     <for list="${slaves.list}" param="slaveHost" delimiter=",">
       <sequential>
         <echo file="runtime/conf/slaves" append="true">@{slaveHost}${line.separator}</echo>
       </sequential>
@@ -47,7 +46,7 @@
 
   <target depends="init" name="update-slaves">
     <echo message="Updating the slave hosts..." />
-    <for list="${SLAVES_LIST}" param="slaveHost" delimiter=":">
+    <for list="${slaves.list}" param="slaveHost" delimiter=",">
       <sequential>
         <echo>Updating slave host @{slaveHost}</echo>
         <var name="var" value="@{slaveHost}" />
