@@ -12,6 +12,7 @@
   </target>
 
   <target name="setup-runtime">
+    <delete dir="runtime/" />
     <echo message="Extracting the current version of Hadoop ${CURRENT_HADOOP}" />
     <exec dir="." executable="tar">
 	<arg line="-zxpf" />
