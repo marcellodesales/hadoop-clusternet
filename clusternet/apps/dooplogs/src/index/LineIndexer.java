@@ -18,12 +18,6 @@ import org.apache.hadoop.util.ToolRunner;
  */
 public class LineIndexer extends Configured implements Tool {
 
-    // where to put the data in hdfs when we're done
-    private static final String OUTPUT_PATH = "output";
-
-    // where to read the data from.
-    private static final String INPUT_PATH = "input";
-
     public int run(String[] args) throws Exception {
 
         Configuration conf = getConf();
@@ -36,8 +30,8 @@ public class LineIndexer extends Configured implements Tool {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 
-        FileInputFormat.addInputPath(job, new Path(INPUT_PATH));
-        FileOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
         return job.waitForCompletion(true) ? 0 : 1;
     }
