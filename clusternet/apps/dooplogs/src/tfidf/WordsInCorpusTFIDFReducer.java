@@ -30,32 +30,34 @@ public class WordsInCorpusTFIDFReducer extends Reducer<Text, Text, Text, Text> {
      * @param values are all the values aggregated during the mapping phase
      * @param context contains the context of the job run 
      * PRE-CONDITION: receive a list of <word, ["doc1=n1/N1", "doc2=n2/N2"]> 
-     * POST-CONDITION: <"word@doc1#D, [n+n, N, TF-IDF]">, <"word2@a.txt, 5/13">
+     * POST-CONDITION: <"word@doc1#D, [n+n, N, TF-IDF]">, <"word2@a.txt, 5/13">, <"word2@b.txt, 0/13"> empty case
      */
     protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-        // get the number of documents indirectly from the file-system (stored in the job name on purpose)
-        int numberOfDocumentsInCorpus = context.getConfiguration().getInt("docsInCorpus", 0);
+        // get the number of documents indirectly from the file-system
+        int numberOfDocumentsInCorpus = context.getConfiguration().getInt("numberOfDocsInCorpus", 0);
         // total frequency of this word
         int numberOfDocumentsInCorpusWhereKeyAppears = 0;
         Map<String, String> tempFrequencies = new HashMap<String, String>();
         for (Text val : values) {
             String[] documentAndFrequencies = val.toString().split("=");
-            numberOfDocumentsInCorpusWhereKeyAppears++;
+            if (Integer.parseInt(documentAndFrequencies[1].split("/")[0]) > 0) { // in case the counter of the words is > 0
+                numberOfDocumentsInCorpusWhereKeyAppears++;
+            }
             tempFrequencies.put(documentAndFrequencies[0], documentAndFrequencies[1]);
         }
         for (String document : tempFrequencies.keySet()) {
             String[] wordFrequenceAndTotalWords = tempFrequencies.get(document).split("/");
 
-            //Term frequency is the quocient of the number of terms in document and the total number of terms in doc
+            //Term frequency is the quocient of the number occurrances of the term in document and the total number of terms in document
             double tf = Double.valueOf(Double.valueOf(wordFrequenceAndTotalWords[0])
                     / Double.valueOf(wordFrequenceAndTotalWords[1]));
             
             //interse document frequency quocient between the number of docs in corpus and number of docs the term appears
-            double idf = (double) numberOfDocumentsInCorpus / (double) numberOfDocumentsInCorpusWhereKeyAppears;
+            // Normalize the value in case the number of appearances are 0, use 1.
+            double idf = Math.log10((double) numberOfDocumentsInCorpus / 
+               (double) (numberOfDocumentsInCorpusWhereKeyAppears + (numberOfDocumentsInCorpusWhereKeyAppears == 0 ? 1 : 0)));
 
-            //given that log(10) = 0, just consider the term frequency in documents
-            double tfIdf = numberOfDocumentsInCorpus == numberOfDocumentsInCorpusWhereKeyAppears ? 
-                    tf : tf * Math.log10(idf);
+            double tfIdf = tf * idf;
 
             this.wordAtDocument.set(key + "@" + document);
             this.tfidfCounts.set("[" + numberOfDocumentsInCorpusWhereKeyAppears + "/"

@@ -17,9 +17,9 @@
   <property name="hadoop-contrib" value="${hadoop-home}/contrib" />
     
 
-  <target name="compile" description="Compile all Java sources">
+  <target name="compile" depends="clean" description="Compile all Java sources">
     <mkdir dir="${bindir}" />
-    <javac destdir="${bindir}" deprecation="on">
+    <javac destdir="${bindir}" deprecation="on" debug="on">
       <src path="${srcdir}" />
       <src path="${testsrcdir}" />
       <classpath>

@@ -102,7 +102,7 @@ public class WordFrequenceInDocMapper extends Mapper<LongWritable, Text, Text, I
             String matchedKey = m.group().toLowerCase();
             // remove names starting with non letters, digits, considered stopwords or containing other chars
             if (!Character.isLetter(matchedKey.charAt(0)) || Character.isDigit(matchedKey.charAt(0))
-                    || googleStopwords.contains(matchedKey) || matchedKey.contains("_")) {
+                    || googleStopwords.contains(matchedKey) || matchedKey.contains("_") || matchedKey.length() < 3) {
                 continue;
             }
             valueBuilder.append(matchedKey);

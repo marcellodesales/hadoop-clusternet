@@ -17,6 +17,7 @@ public class WordCountsForDocsMapper extends Mapper<LongWritable, Text, Text, Te
     
     private Text docName = new Text();
     private Text wordAndCount = new Text();
+    private static final String[] empty = new String[0];
     
     public WordCountsForDocsMapper() {
     }
@@ -38,5 +39,16 @@ public class WordCountsForDocsMapper extends Mapper<LongWritable, Text, Text, Te
         this.docName.set(wordAndDoc[1]);
         this.wordAndCount.set(wordAndDoc[0] + "=" + wordAndDocCounter[1]);
         context.write(this.docName, this.wordAndCount);
+
+        // Get the entire list of documents in corpus from the configuration. If the word does not have appearance, print 0.
+        String[] documentsInCorpus = context.getConfiguration().getStrings("documentsInCorpusList", empty);
+        for (String document : documentsInCorpus) {
+            if (document.equals(wordAndDoc[1])) {
+                continue;
+            }
+            this.docName.set(document);
+            this.wordAndCount.set(wordAndDoc[0] + "=0");
+            context.write(this.docName, this.wordAndCount);
+        }
     }
 }

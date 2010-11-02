@@ -32,7 +32,7 @@ public class WordsInCorpusTFIDFMapper extends Mapper<LongWritable, Text, Text, T
         String[] wordAndCounters = value.toString().split("\t");
         String[] wordAndDoc = wordAndCounters[0].split("@");                 //3/1500
         this.wordAndDoc.set(new Text(wordAndDoc[0]));
-        this.wordAndCounters .set(wordAndDoc[1] + "=" + wordAndCounters[1]);
+        this.wordAndCounters.set(wordAndDoc[1] + "=" + wordAndCounters[1]);
         context.write(this.wordAndDoc, this.wordAndCounters);
     }
 }
