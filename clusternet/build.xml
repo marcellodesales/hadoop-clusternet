@@ -1,6 +1,7 @@
 <project name="ClusterNet" basedir="." default="setup-runtime">
 
   <property name="CURRENT_HADOOP" value="hadoop-0.20.2+737" />
+  <property name="CURRENT_HIVE" value="hive-0.5.0+32" />
   <property file="default.properties" />
   
   <target name="load-contrib">
@@ -21,10 +22,21 @@
     <echo message="Copying default Hadoop configuration to the conf directory." />
     <move file="${CURRENT_HADOOP}" tofile="runtime" />
     <copy todir="runtime/conf/">
-      <fileset dir="conf/" includes="*.xml" />
+      <fileset dir="conf/" includes="*.xml" excludes="*hive*" />
       <fileset dir="conf/" includes="*.sh" />
     </copy>
     
+  </target>
+
+  <target name="setup-hive">
+    <echo message="Extracting the current version of HIVE ${CURRENT_HIVE}" />
+    <exec dir="." executable="tar">
+       <arg line="-zxpf" />
+       <arg line="thirdparty/hive/${CURRENT_HIVE}.tar.gz" />
+    </exec>
+    <mkdir dir="runtime/hive" />
+    <move file="${CURRENT_HIVE}" tofile="runtime/hive" />
+    <copy file="conf/hive-site.xml" todir="runtime/hive/conf" />
   </target>
 
   <target depends="load-contrib" name="authorize-master-ssh-on-slave">
