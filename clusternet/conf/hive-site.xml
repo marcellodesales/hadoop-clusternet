@@ -29,11 +29,11 @@
 </property>
 <property>
   <name>mapred.reduce.tasks</name>
-  <value>8</value>
+  <value>10</value>
 </property>
 <property>
   <name>hive.exec.reducers.max</name>
-  <value>8</value>
+  <value>10</value>
 </property>
 
 </configuration>

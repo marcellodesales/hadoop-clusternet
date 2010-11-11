@@ -67,9 +67,13 @@
       </sequential>
     </for>
     <copy todir="runtime/conf/">
-      <fileset dir="conf/" includes="*.xml"/>
+      <fileset dir="conf/" includes="*.xml" excludes="*hive*"/>
       <fileset dir="conf/" includes="*.sh" />
     </copy>
+    <copy todir="runtime/hive/conf/">
+      <fileset dir="conf/" includes="hive-site.xml" />
+    </copy>
+
   </target>
 
   <target depends="load-contrib " name="update-slaves">
@@ -78,8 +82,8 @@
       <sequential>
         <echo>Updating slave host @{slaveHost}</echo>
         <var name="var" value="@{slaveHost}" />
-	<scp todir="hadoop@${var}:/u1/hadoop/clusternet/runtime/conf" password="hadoop">
-           <fileset dir="conf" includes="*.xml"/>
+	<scp todir="hadoop@${var}:/u1/hadoop/clusternet/runtime/conf" keyfile="${user.home}/.ssh/id_rsa" passphrase="">
+           <fileset dir="conf" includes="*.xml" excludes="*hive*" />
            <fileset dir="conf/" includes="*.sh" />
         </scp>
       </sequential>
