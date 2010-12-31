@@ -28,7 +28,7 @@ public class WordCountsForDocsMapperTest extends TestCase {
 
     @Before
     public void setUp() {
-        mapper = new WordCountsForDocsMapper();
+        mapper = new WordCountsInDocuments.WordCountsForDocsMapper();
         driver = new MapDriver<LongWritable, Text, Text, Text>(mapper);
     }
 

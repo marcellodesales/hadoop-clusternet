@@ -28,7 +28,7 @@ public class WordInCorpusTFIDFMapperTest extends TestCase {
 
     @Before
     public void setUp() {
-        mapper = new WordsInCorpusTFIDFMapper();
+        mapper = new WordsInCorpusTFIDF.WordsInCorpusTFIDFMapper();
         driver = new MapDriver<LongWritable, Text, Text, Text>(mapper);
     }
 

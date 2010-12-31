@@ -33,7 +33,7 @@ public class WordFreqMapperTest extends TestCase {
 
     @Before
     public void setUp() {
-        mapper = new WordFrequenceInDocMapper();
+        mapper = new WordFrequenceInDocument.WordFrequenceInDocMapper();
         driver = new MapDriver<LongWritable, Text, Text, IntWritable>(mapper);
     }
 

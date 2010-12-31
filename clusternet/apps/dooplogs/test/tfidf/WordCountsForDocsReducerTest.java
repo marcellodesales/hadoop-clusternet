@@ -28,7 +28,7 @@ public class WordCountsForDocsReducerTest extends TestCase {
 
     @Before
     public void setUp() {
-        reducer = new WordCountsForDocsReducer();
+        reducer = new WordCountsInDocuments.WordCountsForDocsReducer();
         driver = new ReduceDriver<Text, Text, Text, Text>(reducer);
     }
 

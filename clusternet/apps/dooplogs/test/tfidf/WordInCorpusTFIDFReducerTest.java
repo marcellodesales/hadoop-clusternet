@@ -28,7 +28,7 @@ public class WordInCorpusTFIDFReducerTest extends TestCase {
 
     @Before
     public void setUp() {
-        reducer = new WordsInCorpusTFIDFReducer();
+        reducer = new WordsInCorpusTFIDF.WordsInCorpusTFIDFReducer();
         driver = new ReduceDriver<Text, Text, Text, Text>(reducer);
     }
 

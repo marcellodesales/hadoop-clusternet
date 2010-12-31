@@ -29,7 +29,7 @@ public class WordFreqReducerTest extends TestCase {
 
     @Before
     public void setUp() {
-        reducer = new WordFrequenceInDocReducer();
+        reducer = new WordFrequenceInDocument.WordFrequenceInDocReducer();
         driver = new ReduceDriver<Text, IntWritable, Text, IntWritable>(reducer);
     }
 
