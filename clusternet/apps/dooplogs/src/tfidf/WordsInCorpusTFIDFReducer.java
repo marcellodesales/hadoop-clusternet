@@ -30,7 +30,7 @@ public class WordsInCorpusTFIDFReducer extends Reducer<Text, Text, Text, Text> {
      * @param values are all the values aggregated during the mapping phase
      * @param context contains the context of the job run 
      * PRE-CONDITION: receive a list of <word, ["doc1=n1/N1", "doc2=n2/N2"]> 
-     * POST-CONDITION: <"word@doc1#D, [n+n, N, TF-IDF]">, <"word2@a.txt, 5/13">, <"word2@b.txt, 0/13"> empty case
+     * POST-CONDITION: <"word@doc1#D, [d/D, f/total, TF-IDF]">, <"word2@a.txt, 5/13">, <"word2@b.txt, 0/13"> empty case
      */
     protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
         // get the number of documents indirectly from the file-system
@@ -48,14 +48,14 @@ public class WordsInCorpusTFIDFReducer extends Reducer<Text, Text, Text, Text> {
         for (String document : tempFrequencies.keySet()) {
             String[] wordFrequenceAndTotalWords = tempFrequencies.get(document).split("/");
 
-            //Term frequency is the quocient of the number occurrances of the term in document and the total number of terms in document
+            //Term frequency is the quotient of the number occurrences of the term in document and the total number of terms in document
             double tf = Double.valueOf(Double.valueOf(wordFrequenceAndTotalWords[0])
                     / Double.valueOf(wordFrequenceAndTotalWords[1]));
             
-            //interse document frequency quocient between the number of docs in corpus and number of docs the term appears
-            // Normalize the value in case the number of appearances are 0, use 1.
+            //inverse document frequency quotient between the number of docs in corpus and number of docs the term appears
+            // Normalize the value in case the number of appearances is 0.
             double idf = Math.log10((double) numberOfDocumentsInCorpus / 
-               (double) (numberOfDocumentsInCorpusWhereKeyAppears + (numberOfDocumentsInCorpusWhereKeyAppears == 0 ? 1 : 0)));
+               (double) ((numberOfDocumentsInCorpusWhereKeyAppears == 0 ? 1 : 0) + numberOfDocumentsInCorpusWhereKeyAppears));
 
             double tfIdf = tf * idf;
 
