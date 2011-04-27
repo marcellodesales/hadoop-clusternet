@@ -1,14 +1,7 @@
 /**
  * The GeoCountry table is the one used to load the CSV file with the shell command:
 
-   mysqlimport --fields-terminated-by="," 
-    --fields-optionally-enclosed-by="\"" 
-    --lines-terminated-by="\n" 
-    --host=localhost 
-    --user=marcello 
-    --password=marcello 
-    geoips 
-    geocountry.csv
+   mysqlimport --fields-terminated-by="," --fields-optionally-enclosed-by="\""  --lines-terminated-by="\n"  --host=localhost  --user=marcello  --password=marcello  geoips  geocountry.csv
 
  * geoips -> database to be first created. (CREATE TABLE geoips) use regular encoding
  * geocountry.csv -> csv file renamed from the GeoIPCountryCSV.zip
